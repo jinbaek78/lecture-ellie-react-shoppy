@@ -6,21 +6,19 @@ import { getDatabase } from 'firebase/database';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyDF-50ffYL9XkMxducI6lQ_t69EY3-vXv4',
-  authDomain: 'shoppy-9d187.firebaseapp.com',
-  projectId: 'shoppy-9d187',
-  storageBucket: 'shoppy-9d187.appspot.com',
-  messagingSenderId: '686122458843',
-  appId: '1:686122458843:web:ba759e0d270b235106b6fe',
-  databaseURL:
-    'https://shoppy-9d187-default-rtdb.asia-southeast1.firebasedatabase.app/',
+  apiKey: import.meta.env.VITE_APIKEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  appId: import.meta.env.VITE_APP_ID,
+  databaseURL: import.meta.env.VITE_DB_URL,
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 
 // Initialize Realtime Database and get a reference to the service
-export const database = getDatabase(app);
+export const db = getDatabase(app);
 
 //
 export {
@@ -30,5 +28,15 @@ export {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
+
+export {
+  ref,
+  set,
+  onValue,
+  child,
+  push,
+  update,
+  remove,
+} from 'firebase/database';
 export type { Auth } from 'firebase/auth';
 export type { UserInfo } from 'firebase/auth';
