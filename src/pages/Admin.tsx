@@ -1,14 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useDB } from '../context/DbContext';
-
-export type ProductType = {
-  imgURL?: string;
-  name: string;
-  price: number;
-  category: string;
-  description: string;
-  options: string;
-};
+import { ProductType } from '../context/ProductsContext';
 
 const emptyProduct = {
   imgURL: 'https://picsum.photos/200/200',
@@ -17,17 +9,15 @@ const emptyProduct = {
   category: '',
   description: '',
   options: '',
+  id: '',
 };
 type AdminProps = {};
 const Admin = ({}: AdminProps) => {
   const [productInfo, setProductInfo] = useState<ProductType>(emptyProduct);
   const imgURL = 'https://picsum.photos/200/200';
   const { updateProduct } = useDB();
-  console.log('productInfo: ', productInfo);
   const handleValuesChange = (e: FormEvent<HTMLFormElement>) => {
     const InputElement = e.target as HTMLInputElement;
-    console.log(InputElement);
-    console.log(InputElement.value);
     setProductInfo({ ...productInfo, [InputElement.name]: InputElement.value });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

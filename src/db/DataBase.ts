@@ -7,16 +7,54 @@ import {
   push,
   update,
   remove,
+  Unsubscribe,
 } from '../config/firebase';
-import { ProductType } from '../pages/Admin';
+import { ProductType } from '../context/ProductsContext';
 
 export interface IDataBase {
   updateProduct: (data: ProductType) => void;
   updateCart: (data: ProductType, uid: string) => void;
+  getProducts: (callback: any) => void;
+  subscribeProducts: (callback: any) => Unsubscribe;
 }
 
 export default class DataBase implements IDataBase {
   constructor() {}
+
+  subscribeProducts(
+    updateProducts: React.Dispatch<React.SetStateAction<ProductType[] | null>>
+  ): Unsubscribe {
+    const productsRef = ref(db, 'products');
+    return onValue(productsRef, (snapshot) => {
+      const data = snapshot.val();
+      const result: ProductType[] = [];
+      const products: ProductType[] | undefined = Object.values(data);
+      for (const product of products) {
+        result.push(product);
+      }
+      console.log('products updated', products);
+      updateProducts(result);
+    });
+  }
+
+  getProducts(callback: any) {
+    const productsRef = ref(db, 'products');
+    onValue(
+      productsRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        console.log(Object.values(data));
+        const products: ProductType[] | any = [];
+        for (const product of Object.values(data)) {
+          products.push(product);
+        }
+        console.log('products:', products);
+        callback(products);
+      },
+      { onlyOnce: true }
+    );
+    return;
+  }
 
   async updateProduct(data: ProductType) {
     const productsRef = ref(db, 'products');

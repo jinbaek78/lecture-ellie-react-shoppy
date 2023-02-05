@@ -108,14 +108,9 @@ const Header = ({}: HeaderProps) => {
   //   remove(ref(db, 'somethingNew/-NNQUUxY_WSUXJYc_NFS'));
   // }, []);
 
-  const product = {
-    title: 'some1',
-    price: 160000,
-    id: '-NNQeQuSHC6Ifh_Yal3j2',
-  };
   useEffect(() => {
     // database.updateProduct(product);
-    database.updateCart(product, 'jin');
+    // database.updateCart(product, 'jin');
   }, []);
   //
   useEffect;

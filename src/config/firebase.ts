@@ -38,5 +38,6 @@ export {
   update,
   remove,
 } from 'firebase/database';
+export type { Unsubscribe } from 'firebase/database';
 export type { Auth } from 'firebase/auth';
 export type { UserInfo } from 'firebase/auth';
