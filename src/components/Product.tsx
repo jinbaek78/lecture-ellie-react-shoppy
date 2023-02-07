@@ -18,7 +18,7 @@ const Product = ({ product }: ProductProps) => {
   } = product;
   const navigate = useNavigate();
   const handleProductClick = () => {
-    navigate(`/products/:${productId}`);
+    navigate(`/products/:${productId}`, { state: { product } });
   };
   return (
     <div className="flex flex-col" onClick={handleProductClick}>

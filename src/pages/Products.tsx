@@ -8,14 +8,12 @@ type ProductsProps = {};
 const Products = ({}: ProductsProps) => {
   const hasBanner = useLocation().pathname === '/';
   const products = useProducts();
-  console.log(products?.[0]);
   return (
     <>
       {hasBanner && <Banner />}
       <div className="grid grid-cols-4 gap-3">
         {products &&
           products.map((product) => {
-            console.log(product.id);
             return <Product key={product.id} product={product} />;
           })}
       </div>

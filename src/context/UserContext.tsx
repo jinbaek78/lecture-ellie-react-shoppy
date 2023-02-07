@@ -3,7 +3,7 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 
 type userContextType = {
   userInfo: UserInfo | null;
-  updateUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>;
+  updateUserInfo: (useInfo: UserInfo | null) => void;
 };
 const userContext = createContext<userContextType | null>(null);
 type UserProviderProps = {

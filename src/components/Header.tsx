@@ -17,9 +17,9 @@ import {
   remove,
 } from '../config/firebase';
 import DataBase from '../db/DataBase';
+const database = new DataBase();
 
 const authService = new AuthService();
-const database = new DataBase();
 
 type HeaderProps = {};
 const Header = ({}: HeaderProps) => {

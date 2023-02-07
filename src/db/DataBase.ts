@@ -21,9 +21,7 @@ export interface IDataBase {
 export default class DataBase implements IDataBase {
   constructor() {}
 
-  subscribeProducts(
-    updateProducts: React.Dispatch<React.SetStateAction<ProductType[] | null>>
-  ): Unsubscribe {
+  subscribeProducts(callback: (products: ProductType[]) => void): Unsubscribe {
     const productsRef = ref(db, 'products');
     return onValue(productsRef, (snapshot) => {
       const data = snapshot.val();
@@ -33,7 +31,7 @@ export default class DataBase implements IDataBase {
         result.push(product);
       }
       console.log('products updated', products);
-      updateProducts(result);
+      callback(result);
     });
   }
 
@@ -43,7 +41,6 @@ export default class DataBase implements IDataBase {
       productsRef,
       (snapshot) => {
         const data = snapshot.val();
-        console.log(Object.values(data));
         const products: ProductType[] | any = [];
         for (const product of Object.values(data)) {
           products.push(product);
@@ -59,8 +56,6 @@ export default class DataBase implements IDataBase {
   async updateProduct(data: ProductType) {
     const productsRef = ref(db, 'products');
     const key = push(productsRef).key;
-    // const newProductsRef = push(productsRef);
-    // return set(newProductsRef, { ...data, id: key }) //
     return update(ref(db, `products/${key}`), { ...data, id: key }) //
       .then(() => {
         return console.log('products have updated successfuly');
