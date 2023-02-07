@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useDB } from '../context/DbContext';
 import { useUserInfo } from '../context/UserContext';
 
 const MESSAGE = {
@@ -11,14 +12,41 @@ type MessageType =
   | '✅Item you selected has successfully been added to the cart';
 type ProductDetailProps = {};
 
+export type CartType = {
+  id: string;
+  option: string;
+  count: number;
+};
+
 const ProductDetail = ({}: ProductDetailProps) => {
   const [option, setOption] = useState<string>('');
+  const [message, setMessage] = useState<MessageType | null>(null);
+  const { userInfo } = useUserInfo();
+  const db = useDB();
+  console.log('selected: ', option);
   const {
     state: { product },
   } = useLocation();
   console.log(product);
   const { category, description, id, imgURL, name, options, price } = product;
   const optionList: string[] = options.split(',');
+  const handleAddClick = () => {
+    // db.addTOCart
+    const data = { id, option: option ? option : optionList[0], count: 1 };
+    console.log('passed data: ', data);
+    console.log('user: ', userInfo);
+    if (!userInfo) {
+      return setMessage('You have to sigin first');
+    }
+    // add loading spinner here
+    db.updateCart(data, userInfo.uid).then(() =>
+      setMessage('✅Item you selected has successfully been added to the cart')
+    );
+  };
+  useEffect(() => {
+    console.log('userInfo has changed');
+    setMessage(null);
+  }, [userInfo]);
   return (
     <div className="flex flex-col w-full p-2 px-4">
       <p className="mb-3 text-slate-500">{`>${category}`}</p>
@@ -43,9 +71,18 @@ const ProductDetail = ({}: ProductDetailProps) => {
             </select>
           </div>
           <div className="flex flex-col items-center">
-            <button className="w-11/12 h-8 mb-2 text-white bg-[#4abad9]">
+            <button
+              onClick={handleAddClick}
+              className="w-11/12 h-8 mb-2 text-white bg-[#4abad9]"
+            >
               Add to Cart
             </button>
+            {message &&
+              (message === MESSAGE.SUCCESS ? (
+                <p className="w-11/12 h-8 ">{message}</p>
+              ) : (
+                <p className="w-11/12 h-8 text-red-500">{message}</p>
+              ))}
           </div>
         </div>
       </div>

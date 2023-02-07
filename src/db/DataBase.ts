@@ -10,11 +10,11 @@ import {
   Unsubscribe,
 } from '../config/firebase';
 import { ProductType } from '../context/ProductsContext';
+import { CartType } from '../pages/ProductDetail';
 
 export interface IDataBase {
-  updateProduct: (data: ProductType) => void;
-  updateCart: (data: ProductType, uid: string) => void;
-  getProducts: (callback: any) => void;
+  updateProduct: (data: ProductType) => Promise<void>;
+  updateCart: (data: CartType, uid: string) => Promise<void>;
   subscribeProducts: (callback: any) => Unsubscribe;
 }
 
@@ -35,24 +35,6 @@ export default class DataBase implements IDataBase {
     });
   }
 
-  getProducts(callback: any) {
-    const productsRef = ref(db, 'products');
-    onValue(
-      productsRef,
-      (snapshot) => {
-        const data = snapshot.val();
-        const products: ProductType[] | any = [];
-        for (const product of Object.values(data)) {
-          products.push(product);
-        }
-        console.log('products:', products);
-        callback(products);
-      },
-      { onlyOnce: true }
-    );
-    return;
-  }
-
   async updateProduct(data: ProductType) {
     const productsRef = ref(db, 'products');
     const key = push(productsRef).key;
@@ -63,14 +45,8 @@ export default class DataBase implements IDataBase {
       .catch((err) => console.log('err: ', err));
   }
 
-  async updateCart(data: ProductType, uid: string) {
-    const product = {
-      id: '-NNQeQuSHC6Ifh_Yal3j2',
-      price: 160000,
-      title: 'some1',
-    };
-
-    return update(ref(db, `users/${uid}/cart/${product.id}`), product)
+  async updateCart(data: CartType, uid: string) {
+    return update(ref(db, `users/${uid}/cart/${data.id}`), data)
       .then(() => {
         return console.log('cart has updated successfully');
       })
