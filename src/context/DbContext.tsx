@@ -1,14 +1,14 @@
 import { createContext, ReactNode, useContext } from 'react';
-import DataBase, { IDataBase } from '../db/DataBase';
+import { IDataBase } from '../db/DataBase';
 
-const db = new DataBase();
 const dbContext = createContext<IDataBase | null>(null);
 
 type DbProviderProps = {
+  db: IDataBase;
   children: ReactNode;
 };
 
-const DbProvider = ({ children }: DbProviderProps) => {
+const DbProvider = ({ db, children }: DbProviderProps) => {
   return <dbContext.Provider value={db}>{children}</dbContext.Provider>;
 };
 

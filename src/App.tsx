@@ -4,12 +4,16 @@ import Header from './components/Header';
 import DbProvider from './context/DbContext';
 import ProductsProvider from './context/ProductsContext';
 import UserProvider from './context/UserContext';
+import { IDataBase } from './db/DataBase';
 
-const App = () => {
+type AppProps = {
+  db: IDataBase;
+};
+const App = ({ db }: AppProps) => {
   return (
     <UserProvider>
       <Header />
-      <DbProvider>
+      <DbProvider db={db}>
         <ProductsProvider>
           <Outlet />
         </ProductsProvider>

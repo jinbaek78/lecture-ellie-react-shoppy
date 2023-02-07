@@ -7,11 +7,14 @@ import Products from './pages/Products';
 import Carts from './pages/Carts';
 import Admin from './pages/Admin';
 import ProductDetail from './pages/ProductDetail';
+import DataBase, { IDataBase } from './db/DataBase';
+
+const db: IDataBase = new DataBase();
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <App db={db} />,
     children: [
       { index: true, element: <Products /> },
       { path: '/products', element: <Products /> },
