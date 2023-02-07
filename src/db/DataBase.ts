@@ -16,6 +16,7 @@ export interface IDataBase {
   updateProduct: (data: ProductType) => Promise<void>;
   updateCart: (data: CartType, uid: string) => Promise<void>;
   subscribeProducts: (callback: any) => Unsubscribe;
+  subscribeCart: (uid: string, callback: any) => Unsubscribe;
 }
 
 export default class DataBase implements IDataBase {
@@ -31,6 +32,7 @@ export default class DataBase implements IDataBase {
         result.push(product);
       }
       console.log('products updated', products);
+      console.log('product raw data', data);
       callback(result);
     });
   }
@@ -43,6 +45,26 @@ export default class DataBase implements IDataBase {
         return console.log('products have updated successfuly');
       })
       .catch((err) => console.log('err: ', err));
+  }
+
+  // return update(ref(db, `users/${uid}/cart/${data.id}`), data)
+
+  subscribeCart(
+    uid: string,
+    callback: (cart: CartType[]) => void
+  ): Unsubscribe {
+    const cartRef = ref(db, `users/${uid}/cart`);
+    return onValue(cartRef, (snapshot) => {
+      const data = snapshot.val();
+      const result: CartType[] = [];
+      const cart: CartType[] | undefined = Object.values(data);
+      for (const product of cart) {
+        result.push(product);
+      }
+      console.log('cart updated', cart);
+      console.log('cart, raw data: ', data);
+      callback(result);
+    });
   }
 
   async updateCart(data: CartType, uid: string) {

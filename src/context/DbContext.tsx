@@ -1,7 +1,11 @@
 import { createContext, ReactNode, useContext } from 'react';
 import { IDataBase } from '../db/DataBase';
 
-const dbContext = createContext<IDataBase | null>(null);
+type dbContextType = {
+  db: IDataBase;
+};
+
+const dbContext = createContext<dbContextType | null>(null);
 
 type DbProviderProps = {
   db: IDataBase;
@@ -9,16 +13,18 @@ type DbProviderProps = {
 };
 
 const DbProvider = ({ db, children }: DbProviderProps) => {
-  return <dbContext.Provider value={db}>{children}</dbContext.Provider>;
+  return <dbContext.Provider value={{ db }}>{children}</dbContext.Provider>;
 };
 
 export default DbProvider;
 
-export const useDB = (): IDataBase => {
+export const useDB = (): dbContextType => {
   const database = useContext(dbContext);
   if (database) {
     return database;
   }
+
+  console.log('database: ', database);
 
   throw Error('Something went wrong');
 };

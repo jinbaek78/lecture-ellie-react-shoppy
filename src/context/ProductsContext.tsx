@@ -17,6 +17,10 @@ export type ProductType = {
   id: string;
 };
 
+type RawProductType = {
+  id: ProductType;
+};
+
 const ProductContext = createContext<ProductType[] | null>(null);
 
 type ProductsProviderProps = {
@@ -24,7 +28,8 @@ type ProductsProviderProps = {
 };
 const ProductsProvider = ({ children }: ProductsProviderProps) => {
   const [products, setProducts] = useState<ProductType[] | null>(null);
-  const db = useDB();
+  const [rawProducts, setRawProducts] = useState<RawProductType[] | null>(null);
+  const { db } = useDB();
   useEffect(() => {
     const unSubscribeProducts = db.subscribeProducts(setProducts);
     return () => unSubscribeProducts();

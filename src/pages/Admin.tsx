@@ -15,14 +15,14 @@ type AdminProps = {};
 const Admin = ({}: AdminProps) => {
   const [productInfo, setProductInfo] = useState<ProductType>(emptyProduct);
   const imgURL = 'https://picsum.photos/200/200';
-  const { updateProduct } = useDB();
+  const { db } = useDB();
   const handleValuesChange = (e: FormEvent<HTMLFormElement>) => {
     const InputElement = e.target as HTMLInputElement;
     setProductInfo({ ...productInfo, [InputElement.name]: InputElement.value });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateProduct(productInfo);
+    db.updateProduct(productInfo);
     (e.target as HTMLFormElement).reset();
   };
   return (
