@@ -7,7 +7,6 @@ import {
 } from 'react';
 import { IDataBase } from '../db/DataBase';
 import { CartType, MessageType } from '../pages/ProductDetail';
-import { useDB } from './DbContext';
 import { useUserInfo } from './UserContext';
 
 type CartContextType = {
@@ -28,12 +27,12 @@ type CartItemType = {
 const cartContext = createContext<CartContextType | null>(null);
 
 type CartProviderProps = {
+  db: IDataBase;
   children: ReactNode;
 };
-const CartProvider = ({ children }: CartProviderProps) => {
+const CartProvider = ({ db, children }: CartProviderProps) => {
   const [cart, setCart] = useState<CartType[] | null>(null);
   const { userInfo } = useUserInfo();
-  const { db } = useDB();
   const handleAddToCart = (
     data: CartItemType,
     updateMessage: (message: MessageType) => void

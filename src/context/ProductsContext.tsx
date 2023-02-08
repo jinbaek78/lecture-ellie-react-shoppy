@@ -6,7 +6,6 @@ import {
   useState,
 } from 'react';
 import { IDataBase } from '../db/DataBase';
-import { useDB } from './DbContext';
 
 export type ProductType = {
   imgURL?: string;
@@ -26,11 +25,11 @@ type ProductContextType = {
 const ProductContext = createContext<ProductContextType | null>(null);
 
 type ProductsProviderProps = {
+  db: IDataBase;
   children: ReactNode;
 };
-const ProductsProvider = ({ children }: ProductsProviderProps) => {
+const ProductsProvider = ({ db, children }: ProductsProviderProps) => {
   const [products, setProducts] = useState<ProductType[] | null>(null);
-  const { db } = useDB();
   const handleAddProduct = (productInfo: ProductType, callback: () => void) =>
     db.updateProduct(productInfo, callback);
   useEffect(() => {
