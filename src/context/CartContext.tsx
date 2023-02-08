@@ -17,6 +17,8 @@ type CartContextType = {
     data: CartType,
     updateMessage: (message: MessageType) => void
   ) => void;
+  updateCount: (data: CartItemType, type: 'UP' | 'DOWN') => void;
+  deleteCartItem: (id: string) => void;
 };
 
 export type RawCartItemType = {
@@ -49,6 +51,31 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
       throw Error('something went wrong');
     }
   );
+  const count = cart ? cart.length : 0;
+  const handleUpdateItemCount = (data: CartItemType, type: 'UP' | 'DOWN') => {
+    let count: number = data.count;
+    if ((type === 'DOWN' && count === 1) || userInfo === null) {
+      return;
+    }
+    count = type === 'UP' ? count + 1 : count - 1;
+    const cartItem: CartType = { count, id: data.id, option: data.option };
+    console.log('updated count: ', cartItem);
+    db.updateCartItem(cartItem, userInfo.uid);
+  };
+
+  const handleDeleteItem = (id: string) => {
+    if (!userInfo) {
+      return;
+    }
+
+    const isLastItem = count === 1;
+    console.log('isLastItem: ', isLastItem);
+    if (isLastItem) {
+      db.deleteCartItem(id, userInfo.uid, setRawCart);
+    } else {
+      db.deleteCartItem(id, userInfo.uid);
+    }
+  };
   const handleAddToCart = (
     data: CartType,
     updateMessage: (message: MessageType) => void
@@ -57,7 +84,7 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
       return updateMessage('You have to sigin first');
     }
     // add loading spinner here
-    db.updateCart(data, userInfo.uid).then(() =>
+    db.updateCartItem(data, userInfo.uid).then(() =>
       updateMessage(
         '✅Item you selected has successfully been added to the cart'
       )
@@ -66,7 +93,6 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
 
   useEffect(() => {
     if (userInfo) {
-      console.log('userInfo in cart context: ', userInfo);
       const unSubscribeCart = db.subscribeCart(userInfo.uid, setRawCart);
       return () => unSubscribeCart();
       //
@@ -76,8 +102,10 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
     <cartContext.Provider
       value={{
         cart,
-        count: cart ? cart.length : 0,
+        count,
         addToCart: handleAddToCart,
+        updateCount: handleUpdateItemCount,
+        deleteCartItem: handleDeleteItem,
       }}
     >
       {children}

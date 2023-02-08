@@ -4,10 +4,11 @@ import { AiOutlinePlusSquare, AiOutlineMinusSquare } from 'react-icons/ai';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
 type CartItemProps = {
   item: CartItemType;
+  onUpdateCount: (data: CartItemType, type: 'UP' | 'DOWN') => void;
+  onDeleteItem: (id: string) => void;
 };
-const CartItem = ({ item }: CartItemProps) => {
-  const { count, imgURL, name, option, price } = item;
-  console.log('item: ', item);
+const CartItem = ({ item, onUpdateCount, onDeleteItem }: CartItemProps) => {
+  const { count, imgURL, name, option, price, id } = item;
   return (
     <div className="flex justify-between mb-2">
       <div className="flex">
@@ -21,10 +22,19 @@ const CartItem = ({ item }: CartItemProps) => {
         </div>
       </div>
       <div className="flex self-center items-center text-xl">
-        <AiOutlineMinusSquare className="mr-2" />
+        <AiOutlineMinusSquare
+          className="mr-2 cursor-pointer"
+          onClick={() => onUpdateCount(item, 'DOWN')}
+        />
         <p className="mr-2">{count}</p>
-        <AiOutlinePlusSquare className="mr-4" />
-        <RiDeleteBin6Fill />
+        <AiOutlinePlusSquare
+          className="mr-4 cursor-pointer"
+          onClick={() => onUpdateCount(item, 'UP')}
+        />
+        <RiDeleteBin6Fill
+          className="cursor-pointer"
+          onClick={() => onDeleteItem(id)}
+        />
       </div>
     </div>
   );

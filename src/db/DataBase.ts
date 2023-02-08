@@ -1,9 +1,7 @@
 import {
   db,
   ref,
-  set,
   onValue,
-  child,
   push,
   update,
   remove,
@@ -15,7 +13,12 @@ import { CartType } from '../pages/ProductDetail';
 
 export interface IDataBase {
   updateProduct: (data: ProductType, callback: () => void) => Promise<void>;
-  updateCart: (data: CartType, uid: string) => Promise<void>;
+  updateCartItem: (data: CartType, uid: string) => Promise<void>;
+  deleteCartItem: (
+    id: string,
+    uid: string,
+    callback?: (setTo: null) => void
+  ) => void;
   subscribeProducts: (
     updateProducts: (products: ProductType[] | null) => void,
     updateRawProducts: (rawProducts: rawProductType | null) => void
@@ -40,7 +43,6 @@ export default class DataBase implements IDataBase {
           result.push(product);
         }
         console.log('products updated', products);
-        console.log('product raw rawData', rawData);
         updateProducts(result);
         updateRawProducts(rawData);
       }
@@ -68,19 +70,17 @@ export default class DataBase implements IDataBase {
     return onValue(cartRef, (snapshot) => {
       const data: RawCartItemType | null = snapshot.val();
       const result: CartType[] = [];
-      console.log('data: ', data);
       if (data) {
         const cart: CartType[] | undefined = Object.values(data);
         for (const product of cart) {
           result.push(product);
         }
-        console.log('cart updated', cart);
         callback(result);
       }
     });
   }
 
-  async updateCart(data: CartType, uid: string) {
+  async updateCartItem(data: CartType, uid: string) {
     return update(ref(db, `users/${uid}/cart/${data.id}`), data)
       .then(() => {
         return console.log('cart has updated successfully');
@@ -88,9 +88,16 @@ export default class DataBase implements IDataBase {
       .catch((err) => console.log('err: ', err));
   }
 
-  // async subscribeOnProductChange => using onValue
-  // async subscribeOnCartChange => using onValue
-
-  // remove(ref(db, 'somethingNew/-NNQUUxY_WSUXJYc_NFS'));
-  // async remove(){}
+  async deleteCartItem(
+    id: string,
+    uid: string,
+    callback?: (setTo: null) => void
+  ) {
+    return remove(ref(db, `users/${uid}/cart/${id}`))
+      .then(() => {
+        callback && callback(null);
+        return console.log('cart has deleted successfully');
+      })
+      .catch((err) => console.log('err: ', err));
+  }
 }
