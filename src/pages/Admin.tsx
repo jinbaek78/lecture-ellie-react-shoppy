@@ -1,6 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { useDB } from '../context/DbContext';
-import { ProductType } from '../context/ProductsContext';
+import { ProductType, useProducts } from '../context/ProductsContext';
 
 const emptyProduct = {
   imgURL: 'https://picsum.photos/200/200',
@@ -15,15 +14,16 @@ type AdminProps = {};
 const Admin = ({}: AdminProps) => {
   const [productInfo, setProductInfo] = useState<ProductType>(emptyProduct);
   const imgURL = 'https://picsum.photos/200/200';
-  const { db } = useDB();
+
+  const { addProduct } = useProducts();
   const handleValuesChange = (e: FormEvent<HTMLFormElement>) => {
     const InputElement = e.target as HTMLInputElement;
     setProductInfo({ ...productInfo, [InputElement.name]: InputElement.value });
   };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    db.updateProduct(productInfo);
-    (e.target as HTMLFormElement).reset();
+    const formElement = e.target as HTMLFormElement;
+    addProduct(productInfo, () => formElement.reset());
   };
   return (
     <div className="flex flex-col h-full">

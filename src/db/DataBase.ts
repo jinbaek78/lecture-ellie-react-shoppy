@@ -13,7 +13,7 @@ import { ProductType } from '../context/ProductsContext';
 import { CartType } from '../pages/ProductDetail';
 
 export interface IDataBase {
-  updateProduct: (data: ProductType) => Promise<void>;
+  updateProduct: (data: ProductType, callback: () => void) => Promise<void>;
   updateCart: (data: CartType, uid: string) => Promise<void>;
   subscribeProducts: (callback: any) => Unsubscribe;
   subscribeCart: (uid: string, callback: any) => Unsubscribe;
@@ -37,11 +37,12 @@ export default class DataBase implements IDataBase {
     });
   }
 
-  async updateProduct(data: ProductType) {
+  async updateProduct(data: ProductType, callback: () => void) {
     const productsRef = ref(db, 'products');
     const key = push(productsRef).key;
     return update(ref(db, `products/${key}`), { ...data, id: key }) //
       .then(() => {
+        callback();
         return console.log('products have updated successfuly');
       })
       .catch((err) => console.log('err: ', err));

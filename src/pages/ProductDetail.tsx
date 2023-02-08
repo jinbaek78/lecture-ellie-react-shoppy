@@ -1,14 +1,13 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { useDB } from '../context/DbContext';
 import { useUserInfo } from '../context/UserContext';
 
 const MESSAGE = {
   ERROR: 'You have to sigin first',
   SUCCESS: '✅Item you selected has successfully been added to the cart',
 };
-type MessageType =
+export type MessageType =
   | 'You have to sigin first'
   | '✅Item you selected has successfully been added to the cart';
 type ProductDetailProps = {};
@@ -23,21 +22,16 @@ const ProductDetail = ({}: ProductDetailProps) => {
   const [option, setOption] = useState<string>('');
   const [message, setMessage] = useState<MessageType | null>(null);
   const { userInfo } = useUserInfo();
-  const { db } = useDB();
+  const { addToCart } = useCart();
   const {
     state: { product },
   } = useLocation();
   const { category, description, id, imgURL, name, options, price } = product;
   const optionList: string[] = options.split(',');
   const handleAddClick = () => {
-    // db.addTOCart
-    const data = { id, option: option ? option : optionList[0], count: 1 };
-    if (!userInfo) {
-      return setMessage('You have to sigin first');
-    }
-    // add loading spinner here
-    db.updateCart(data, userInfo.uid).then(() =>
-      setMessage('✅Item you selected has successfully been added to the cart')
+    addToCart(
+      { id, option: option ? option : optionList[0], count: 1 },
+      setMessage
     );
   };
   useEffect(() => {

@@ -5,12 +5,23 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { CartType } from '../pages/ProductDetail';
+import { IDataBase } from '../db/DataBase';
+import { CartType, MessageType } from '../pages/ProductDetail';
 import { useDB } from './DbContext';
 import { useUserInfo } from './UserContext';
 
 type CartContextType = {
   cart: CartType[] | null;
+  count: number;
+  addToCart: (
+    data: CartItemType,
+    updateMessage: (message: MessageType) => void
+  ) => void;
+};
+
+type CartItemType = {
+  id: string;
+  option: string;
   count: number;
 };
 
@@ -23,6 +34,20 @@ const CartProvider = ({ children }: CartProviderProps) => {
   const [cart, setCart] = useState<CartType[] | null>(null);
   const { userInfo } = useUserInfo();
   const { db } = useDB();
+  const handleAddToCart = (
+    data: CartItemType,
+    updateMessage: (message: MessageType) => void
+  ) => {
+    if (!userInfo) {
+      return updateMessage('You have to sigin first');
+    }
+    // add loading spinner here
+    db.updateCart(data, userInfo.uid).then(() =>
+      updateMessage(
+        '✅Item you selected has successfully been added to the cart'
+      )
+    );
+  };
 
   useEffect(() => {
     if (userInfo) {
@@ -33,7 +58,13 @@ const CartProvider = ({ children }: CartProviderProps) => {
     }
   }, [userInfo]);
   return (
-    <cartContext.Provider value={{ cart, count: cart ? cart.length : 0 }}>
+    <cartContext.Provider
+      value={{
+        cart,
+        count: cart ? cart.length : 0,
+        addToCart: handleAddToCart,
+      }}
+    >
       {children}
     </cartContext.Provider>
   );

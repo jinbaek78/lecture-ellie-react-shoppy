@@ -7,7 +7,7 @@ import { useProducts } from '../context/ProductsContext';
 type ProductsProps = {};
 const Products = ({}: ProductsProps) => {
   const hasBanner = useLocation().pathname === '/';
-  const products = useProducts();
+  const { products } = useProducts();
   return (
     <>
       {hasBanner && <Banner />}
