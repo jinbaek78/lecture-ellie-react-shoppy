@@ -8,8 +8,10 @@ import Carts from './pages/Carts';
 import Admin from './pages/Admin';
 import ProductDetail from './pages/ProductDetail';
 import DataBase, { IDataBase } from './db/DataBase';
+import ImageUpload from './service/ImageUpload';
 
 const db: IDataBase = new DataBase();
+const imageUploader = new ImageUpload();
 
 const router = createBrowserRouter([
   {
@@ -20,7 +22,7 @@ const router = createBrowserRouter([
       { path: '/products', element: <Products /> },
       { path: '/products/:productId', element: <ProductDetail /> },
       { path: '/carts', element: <Carts /> },
-      { path: '/admin', element: <Admin /> },
+      { path: '/admin', element: <Admin imageUploader={imageUploader} /> },
     ],
   },
 ]);

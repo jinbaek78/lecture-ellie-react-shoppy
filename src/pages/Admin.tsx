@@ -1,8 +1,9 @@
-import { FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { ProductType, useProducts } from '../context/ProductsContext';
+import { IimageUpload } from '../service/ImageUpload';
 
 const emptyProduct = {
-  imgURL: 'https://picsum.photos/200/200',
+  imgURL: '',
   name: '',
   price: 0,
   category: '',
@@ -10,10 +11,12 @@ const emptyProduct = {
   options: '',
   id: '',
 };
-type AdminProps = {};
-const Admin = ({}: AdminProps) => {
+type AdminProps = {
+  imageUploader: IimageUpload;
+};
+const Admin = ({ imageUploader }: AdminProps) => {
   const [productInfo, setProductInfo] = useState<ProductType>(emptyProduct);
-  const imgURL = 'https://picsum.photos/200/200';
+  const [imgFile, setImgFile] = useState<File | null>(null);
 
   const { addProduct } = useProducts();
   const handleValuesChange = (e: FormEvent<HTMLFormElement>) => {
@@ -23,16 +26,27 @@ const Admin = ({}: AdminProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElement = e.target as HTMLFormElement;
-    addProduct(productInfo, () => formElement.reset());
+    if (imgFile) {
+      imageUploader.upload(imgFile, (url) => {
+        addProduct({ ...productInfo, imgURL: url }, () => formElement.reset());
+      });
+    }
+    console.log('There is no img file yet');
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    const selectedFile = target.files![0];
+    setImgFile(selectedFile);
   };
   return (
     <div className="flex flex-col h-full">
       <div>
         <p className="text-2xl text-center p-2">Register new Product </p>
-        {imgURL && (
+        {imgFile && (
           <img
             className="m-auto p-1 pb-2"
-            src={imgURL}
+            src={URL.createObjectURL(imgFile)}
             width={350}
             height={500}
           />
@@ -41,7 +55,12 @@ const Admin = ({}: AdminProps) => {
 
       <form onSubmit={handleSubmit} onChange={handleValuesChange}>
         <div className="flex p-3 items-center justify-start w-full h-15 border  border-zinc-200">
-          <input type="file" name="imgURL" className="w-full" />
+          <input
+            type="file"
+            name="imgURL"
+            className="w-full"
+            onChange={handleImageChange}
+          />
         </div>
 
         <div className="flex p-3 items-center justify-start w-full h-15 border  border-zinc-200 my-2">
