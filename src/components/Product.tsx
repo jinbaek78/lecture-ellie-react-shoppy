@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CartItemType } from '../context/CartContext';
 import { ProductType } from '../context/ProductsContext';
 
 type ProductProps = {
@@ -12,8 +13,7 @@ const Product = ({ product }: ProductProps) => {
     name,
     price,
     category,
-    description,
-    options,
+
     id: productId,
   } = product;
   const navigate = useNavigate();

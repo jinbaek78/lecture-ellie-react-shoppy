@@ -11,7 +11,7 @@ import { ProductType, useProducts } from './ProductsContext';
 import { useUserInfo } from './UserContext';
 
 type CartContextType = {
-  cart: CartType[] | undefined;
+  cart: CartItemType[] | undefined;
   count: number;
   addToCart: (
     data: CartType,
@@ -22,7 +22,7 @@ type CartContextType = {
 export type RawCartItemType = {
   [key: string]: CartType;
 };
-type CartItemType = CartType & {
+export type CartItemType = CartType & {
   name: string;
   imgURL: string;
   price: number;
