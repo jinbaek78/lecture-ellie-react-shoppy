@@ -7,21 +7,25 @@ import {
 } from 'react';
 import { IDataBase } from '../db/DataBase';
 import { CartType, MessageType } from '../pages/ProductDetail';
+import { ProductType, useProducts } from './ProductsContext';
 import { useUserInfo } from './UserContext';
 
 type CartContextType = {
-  cart: CartType[] | null;
+  cart: CartType[] | undefined;
   count: number;
   addToCart: (
-    data: CartItemType,
+    data: CartType,
     updateMessage: (message: MessageType) => void
   ) => void;
 };
 
-type CartItemType = {
-  id: string;
-  option: string;
-  count: number;
+export type RawCartItemType = {
+  [key: string]: CartType;
+};
+type CartItemType = CartType & {
+  name: string;
+  imgURL: string;
+  price: number;
 };
 
 const cartContext = createContext<CartContextType | null>(null);
@@ -31,10 +35,22 @@ type CartProviderProps = {
   children: ReactNode;
 };
 const CartProvider = ({ db, children }: CartProviderProps) => {
-  const [cart, setCart] = useState<CartType[] | null>(null);
+  const [rawCart, setRawCart] = useState<CartType[] | null>(null);
   const { userInfo } = useUserInfo();
+  const { getProductInfo } = useProducts();
+  const cart: CartItemType[] | undefined = rawCart?.map(
+    (item: CartType): CartItemType => {
+      const product: ProductType | undefined = getProductInfo(item.id);
+      if (product) {
+        const { name, price } = product;
+        const imgURL = product.imgURL || '';
+        return { ...item, imgURL, name, price };
+      }
+      throw Error('something went wrong');
+    }
+  );
   const handleAddToCart = (
-    data: CartItemType,
+    data: CartType,
     updateMessage: (message: MessageType) => void
   ) => {
     if (!userInfo) {
@@ -51,7 +67,7 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
   useEffect(() => {
     if (userInfo) {
       console.log('userInfo in cart context: ', userInfo);
-      const unSubscribeCart = db.subscribeCart(userInfo.uid, setCart);
+      const unSubscribeCart = db.subscribeCart(userInfo.uid, setRawCart);
       return () => unSubscribeCart();
       //
     }

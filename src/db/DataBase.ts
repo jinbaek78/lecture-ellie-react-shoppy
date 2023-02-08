@@ -9,31 +9,41 @@ import {
   remove,
   Unsubscribe,
 } from '../config/firebase';
-import { ProductType } from '../context/ProductsContext';
+import { RawCartItemType } from '../context/CartContext';
+import { ProductType, rawProductType } from '../context/ProductsContext';
 import { CartType } from '../pages/ProductDetail';
 
 export interface IDataBase {
   updateProduct: (data: ProductType, callback: () => void) => Promise<void>;
   updateCart: (data: CartType, uid: string) => Promise<void>;
-  subscribeProducts: (callback: any) => Unsubscribe;
+  subscribeProducts: (
+    updateProducts: (products: ProductType[] | null) => void,
+    updateRawProducts: (rawProducts: rawProductType | null) => void
+  ) => Unsubscribe;
   subscribeCart: (uid: string, callback: any) => Unsubscribe;
 }
 
 export default class DataBase implements IDataBase {
   constructor() {}
 
-  subscribeProducts(callback: (products: ProductType[]) => void): Unsubscribe {
+  subscribeProducts(
+    updateProducts: (products: ProductType[] | null) => void,
+    updateRawProducts: (rawProducts: rawProductType | null) => void
+  ): Unsubscribe {
     const productsRef = ref(db, 'products');
     return onValue(productsRef, (snapshot) => {
-      const data = snapshot.val();
+      const rawData: rawProductType | null = snapshot.val();
       const result: ProductType[] = [];
-      const products: ProductType[] | undefined = Object.values(data);
-      for (const product of products) {
-        result.push(product);
+      if (rawData) {
+        const products: ProductType[] = Object?.values?.(rawData);
+        for (const product of products) {
+          result.push(product);
+        }
+        console.log('products updated', products);
+        console.log('product raw rawData', rawData);
+        updateProducts(result);
+        updateRawProducts(rawData);
       }
-      console.log('products updated', products);
-      console.log('product raw data', data);
-      callback(result);
     });
   }
 
@@ -56,15 +66,17 @@ export default class DataBase implements IDataBase {
   ): Unsubscribe {
     const cartRef = ref(db, `users/${uid}/cart`);
     return onValue(cartRef, (snapshot) => {
-      const data = snapshot.val();
+      const data: RawCartItemType | null = snapshot.val();
       const result: CartType[] = [];
-      const cart: CartType[] | undefined = Object.values(data);
-      for (const product of cart) {
-        result.push(product);
+      console.log('data: ', data);
+      if (data) {
+        const cart: CartType[] | undefined = Object.values(data);
+        for (const product of cart) {
+          result.push(product);
+        }
+        console.log('cart updated', cart);
+        callback(result);
       }
-      console.log('cart updated', cart);
-      console.log('cart, raw data: ', data);
-      callback(result);
     });
   }
 

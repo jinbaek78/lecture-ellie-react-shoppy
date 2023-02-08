@@ -1,13 +1,10 @@
 import { ReactNode } from 'react';
-// db structure
-// users: userId: productId: {
-//   count: 0
-// }
-// can get productInfo with using productId
-// useProducts
+import { useCart } from '../context/CartContext';
 
 type CartsProps = {};
 const Carts = ({}: CartsProps) => {
+  const { cart } = useCart();
+  console.log('in carts, cart: ', cart);
   return <div>Cart</div>;
 };
 

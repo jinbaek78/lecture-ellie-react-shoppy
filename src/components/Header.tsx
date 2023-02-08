@@ -25,6 +25,9 @@ const Header = ({}: HeaderProps) => {
     navigate('/products');
   };
   const handleCartClick = () => {
+    // if (!userInfo) {
+    //   return;
+    // }
     navigate('/carts');
   };
   const handleLoginOrLogoutClick = () => {

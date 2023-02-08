@@ -12,12 +12,13 @@ type AppProps = {
 const App = ({ db }: AppProps) => {
   return (
     <UserProvider>
-      <CartProvider db={db}>
-        <Header />
-        <ProductsProvider db={db}>
+      <ProductsProvider db={db}>
+        <CartProvider db={db}>
+          <Header />
+
           <Outlet />
-        </ProductsProvider>
-      </CartProvider>
+        </CartProvider>
+      </ProductsProvider>
     </UserProvider>
   );
 };
