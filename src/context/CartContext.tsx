@@ -39,7 +39,6 @@ type CartProviderProps = {
 const CartProvider = ({ db, children }: CartProviderProps) => {
   const [rawCart, setRawCart] = useState<CartType[] | null>(null);
   const { userInfo } = useUserInfo();
-  console.log('rawCart: ', rawCart);
   const { getProductInfo } = useProducts();
   const cart: CartItemType[] | undefined = rawCart?.map(
     (item: CartType): CartItemType => {
@@ -60,7 +59,6 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
     }
     count = type === 'UP' ? count + 1 : count - 1;
     const cartItem: CartType = { count, id: data.id, option: data.option };
-    console.log('updated count: ', cartItem);
     db.updateCartItem(cartItem, userInfo.uid);
   };
 
@@ -70,7 +68,6 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
     }
 
     const isLastItem = count === 1;
-    console.log('isLastItem: ', isLastItem);
     if (isLastItem) {
       db.deleteCartItem(id, userInfo.uid, setRawCart);
     } else {

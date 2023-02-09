@@ -15,7 +15,6 @@ const Header = ({}: HeaderProps) => {
   const { userInfo, updateUserInfo } = useUserInfo();
   const { count } = useCart();
   const isAdmin = userInfo?.uid === import.meta.env.VITE_ADMIN_UID;
-  console.log('isAdmin: ', isAdmin);
 
   const navigate = useNavigate();
   const handleLogoClick = () => {
@@ -35,7 +34,7 @@ const Header = ({}: HeaderProps) => {
       return authService.signWithPopup(updateUserInfo);
     }
 
-    authService.signOut();
+    authService.signOut(() => updateUserInfo(null));
   };
   const handlePencilClick = () => {
     navigate('/admin');

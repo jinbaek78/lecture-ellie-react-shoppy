@@ -20,10 +20,7 @@ export default class AuthService {
     const provider = new GoogleAuthProvider();
     signInWithPopup(this.auth, provider)
       .then((result) => {
-        // The signed-in user info.
-        const user = result.user;
-        console.log('user: ', user);
-        updateUserInfo(user);
+        updateUserInfo(result.user);
       })
       .catch((error) => {
         // Handle Errors here.
@@ -37,7 +34,8 @@ export default class AuthService {
       });
   }
 
-  async signOut() {
+  async signOut(callback: () => void) {
     signOut(this.auth);
+    callback && callback();
   }
 }

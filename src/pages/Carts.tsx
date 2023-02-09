@@ -13,7 +13,6 @@ const Carts = ({}: CartsProps) => {
 
   const SHIPMENT_FEE = PRODUCTS_PRICE! >= 20000 ? 0 : 3000;
   const TOTAL_PRICE = PRODUCTS_PRICE ? PRODUCTS_PRICE + SHIPMENT_FEE : 0;
-  console.log('TotalProductsPrice:', PRODUCTS_PRICE);
 
   return (
     <div className="p-5 w-full h-full">

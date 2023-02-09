@@ -42,7 +42,6 @@ export default class DataBase implements IDataBase {
         for (const product of products) {
           result.push(product);
         }
-        console.log('products updated', products);
         updateProducts(result);
         updateRawProducts(rawData);
       }
@@ -55,7 +54,6 @@ export default class DataBase implements IDataBase {
     return update(ref(db, `products/${key}`), { ...data, id: key }) //
       .then(() => {
         callback();
-        return console.log('products have updated successfuly');
       })
       .catch((err) => console.log('err: ', err));
   }
@@ -81,11 +79,9 @@ export default class DataBase implements IDataBase {
   }
 
   async updateCartItem(data: CartType, uid: string) {
-    return update(ref(db, `users/${uid}/cart/${data.id}`), data)
-      .then(() => {
-        return console.log('cart has updated successfully');
-      })
-      .catch((err) => console.log('err: ', err));
+    return update(ref(db, `users/${uid}/cart/${data.id}`), data).catch((err) =>
+      console.log('err: ', err)
+    );
   }
 
   async deleteCartItem(
@@ -96,7 +92,6 @@ export default class DataBase implements IDataBase {
     return remove(ref(db, `users/${uid}/cart/${id}`))
       .then(() => {
         callback && callback(null);
-        return console.log('cart has deleted successfully');
       })
       .catch((err) => console.log('err: ', err));
   }

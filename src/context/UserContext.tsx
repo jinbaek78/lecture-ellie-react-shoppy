@@ -12,7 +12,6 @@ type UserProviderProps = {
 
 const UserProvider = ({ children }: UserProviderProps) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-
   return (
     <userContext.Provider value={{ userInfo, updateUserInfo: setUserInfo }}>
       {children}
