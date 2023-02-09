@@ -41,7 +41,7 @@ const ProductDetail = ({}: ProductDetailProps) => {
     <div className="flex flex-col w-full p-2 px-4">
       <p className="mb-3 text-slate-500">{`>${category}`}</p>
       <div className="flex w-full">
-        <img className=" basis-7/12" src={imgURL} alt={name} />
+        <img className=" basis-7/12 max-w-lg" src={imgURL} alt={name} />
         <div className="basis-5/12 p-2  px-3 ">
           <p className="text-2xl">{name}</p>
           <p className="w-ful border-b py-2 border-b-zinc-300">₩{price}</p>

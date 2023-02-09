@@ -12,7 +12,7 @@ const CartItem = ({ item, onUpdateCount, onDeleteItem }: CartItemProps) => {
   return (
     <div className="flex justify-between mb-2">
       <div className="flex">
-        <img src={imgURL} alt={name} />
+        <img src={imgURL} alt={name} width="200" height="200" />
         <div className="ml-2 self-center">
           <p className="text-xl">{name}</p>
           <p className=" font-bold text-lg text-[#4abad9]">

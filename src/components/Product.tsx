@@ -22,7 +22,7 @@ const Product = ({ product }: ProductProps) => {
   };
   return (
     <div className="flex flex-col" onClick={handleProductClick}>
-      <img src={imgURL} />
+      <img className="w-60 h-64" src={imgURL} />
       <div className="flex p-1 px-1 justify-between">
         <div className="flex flex-col ">
           <p className="text-sm">{name}</p>
