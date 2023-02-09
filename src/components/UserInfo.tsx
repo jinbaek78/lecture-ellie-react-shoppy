@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { useUserInfo } from '../context/UserContext';
 
 type UserInfoProps = {};

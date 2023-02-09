@@ -5,16 +5,11 @@ import {
   GoogleAuthProvider,
   UserInfo,
   signOut,
-  onAuthStateChanged,
 } from '../config/firebase';
 
 export default class AuthService {
   private auth: Auth = getAuth();
   constructor() {}
-
-  subscribeOnAuthChanged(updateUserInfo: (user: UserInfo | null) => void) {
-    return onAuthStateChanged(this.auth, () => updateUserInfo(null));
-  }
 
   async signWithPopup(updateUserInfo: (user: UserInfo) => void) {
     const provider = new GoogleAuthProvider();
@@ -23,14 +18,7 @@ export default class AuthService {
         updateUserInfo(result.user);
       })
       .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
+        console.log(error);
       });
   }
 

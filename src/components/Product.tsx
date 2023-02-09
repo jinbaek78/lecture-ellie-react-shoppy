@@ -1,6 +1,4 @@
-import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CartItemType } from '../context/CartContext';
 import { ProductType } from '../context/ProductsContext';
 
 type ProductProps = {

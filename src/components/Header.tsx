@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { FiShoppingBag } from 'react-icons/fi';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
 import { BsFillPencilFill } from 'react-icons/bs';
@@ -42,13 +41,7 @@ const Header = ({}: HeaderProps) => {
   const handlePencilClick = () => {
     navigate('/admin');
   };
-  useEffect(() => {
-    const unSubscribe = authService.subscribeOnAuthChanged(updateUserInfo);
-    return () => unSubscribe();
-  }, []);
 
-  //
-  useEffect;
   return (
     <div className="flex justify-between p-2 relative">
       <div

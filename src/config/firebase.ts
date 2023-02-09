@@ -23,7 +23,6 @@ export const db = getDatabase(app);
 //
 export {
   GoogleAuthProvider,
-  onAuthStateChanged,
   getAuth,
   signInWithPopup,
   signOut,

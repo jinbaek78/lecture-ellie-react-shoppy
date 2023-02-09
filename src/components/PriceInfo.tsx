@@ -1,5 +1,3 @@
-import { ReactNode } from 'react';
-
 type PriceInfoProps = {
   title: string;
   price: number;

@@ -48,7 +48,7 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
         const imgURL = product.imgURL || '';
         return { ...item, imgURL, name, price };
       }
-      throw Error('something went wrong, products doen not exist ');
+      throw Error('something went wrong, products does not exist ');
     }
   );
   const count = cart ? cart.length : 0;

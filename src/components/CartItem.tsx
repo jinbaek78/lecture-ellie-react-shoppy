@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { CartItemType } from '../context/CartContext';
 import { AiOutlinePlusSquare, AiOutlineMinusSquare } from 'react-icons/ai';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
