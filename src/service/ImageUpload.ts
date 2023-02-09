@@ -25,8 +25,17 @@ export default class ImageUpload {
       .then((res) => {
         if (res) {
           const imgURL = res.data['secure_url'];
+          // const converted = this.convertToThumbnailURL(imgURL);
+          // console.log('converted: ', converted);
+          // callback(converted);
           callback(imgURL);
         }
       });
   }
+
+  // private convertToThumbnailURL(url: string) {
+  //   const splited = url.split('upload');
+  //   const size = 'c_thumb,w_200,g_face';
+  //   return `${splited[0]}upload/${size}${splited[1]}`;
+  // }
 }

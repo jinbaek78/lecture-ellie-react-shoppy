@@ -11,7 +11,7 @@ const Products = ({}: ProductsProps) => {
   return (
     <>
       {hasBanner && <Banner />}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-3 mt-3">
         {products &&
           products.map((product) => {
             return <Product key={product.id} product={product} />;

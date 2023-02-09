@@ -69,8 +69,7 @@ const Admin = ({ imageUploader }: AdminProps) => {
           <img
             className="m-auto p-1 pb-2"
             src={URL.createObjectURL(imgFile)}
-            width={350}
-            height={300}
+            width={230}
           />
         )}
       </div>

@@ -39,6 +39,7 @@ type CartProviderProps = {
 const CartProvider = ({ db, children }: CartProviderProps) => {
   const [rawCart, setRawCart] = useState<CartType[] | null>(null);
   const { userInfo } = useUserInfo();
+  console.log('rawCart: ', rawCart);
   const { getProductInfo } = useProducts();
   const cart: CartItemType[] | undefined = rawCart?.map(
     (item: CartType): CartItemType => {
@@ -48,7 +49,7 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
         const imgURL = product.imgURL || '';
         return { ...item, imgURL, name, price };
       }
-      throw Error('something went wrong');
+      throw Error('something went wrong, products doen not exist ');
     }
   );
   const count = cart ? cart.length : 0;

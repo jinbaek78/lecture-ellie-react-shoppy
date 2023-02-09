@@ -10,7 +10,7 @@ type CartItemProps = {
 const CartItem = ({ item, onUpdateCount, onDeleteItem }: CartItemProps) => {
   const { count, imgURL, name, option, price, id } = item;
   return (
-    <div className="flex justify-between mb-2">
+    <div className="max-h-44 flex justify-between mb-2">
       <div className="flex">
         <img src={imgURL} alt={name} width="200" height="200" />
         <div className="ml-2 self-center">
