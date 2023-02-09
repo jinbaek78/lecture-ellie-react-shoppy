@@ -34,7 +34,10 @@ const Header = ({}: HeaderProps) => {
       return authService.signWithPopup(updateUserInfo);
     }
 
-    authService.signOut(() => updateUserInfo(null));
+    authService.signOut(() => {
+      updateUserInfo(null);
+      navigate('/');
+    });
   };
   const handlePencilClick = () => {
     navigate('/admin');
