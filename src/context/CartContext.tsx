@@ -93,7 +93,8 @@ const CartProvider = ({ db, children }: CartProviderProps) => {
     if (userInfo) {
       const unSubscribeCart = db.subscribeCart(userInfo.uid, setRawCart);
       return () => unSubscribeCart();
-      //
+    } else {
+      setRawCart(null);
     }
   }, [userInfo]);
   return (

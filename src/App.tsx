@@ -15,7 +15,6 @@ const App = ({ db }: AppProps) => {
       <ProductsProvider db={db}>
         <CartProvider db={db}>
           <Header />
-
           <Outlet />
         </CartProvider>
       </ProductsProvider>
