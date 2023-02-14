@@ -12,12 +12,15 @@ const Header = ({}: HeaderProps) => {
   const handlePencilClick = () => navigate('/products/new');
 
   return (
-    <header>
-      <div onClick={handleShoppyClick}>
+    <header className="flex  justify-between p-1 px-2 border-b border-b-zic-300 cursor-pointer">
+      <div
+        className="flex gap-1 items-center text-2xl text-[#4abad9]"
+        onClick={handleShoppyClick}
+      >
         <FiShoppingBag />
         <p>Shoppy</p>
       </div>
-      <div>
+      <div className="flex gap-2 items-center text-sm font-semibold cursor-pointer">
         <p onClick={handleProductsClick}>Products</p>
         <p onClick={handleCartsClick}>Carts</p>
         <BsPencilFill onClick={handlePencilClick} />
