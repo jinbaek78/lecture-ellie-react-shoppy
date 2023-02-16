@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
+import Storage from './db/storage';
 import './index.css';
 import AllProducts from './pages/AllProducts';
 import Home from './pages/Home';
@@ -9,11 +10,15 @@ import MyCart from './pages/MyCart';
 import NewProduct from './pages/NewProduct';
 import NotFound from './pages/NotFound';
 import ProductDetail from './pages/ProductDetail';
+import Auth from './services/auth';
+
+const authService = new Auth();
+const storage = new Storage();
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <App authService={authService} storage={storage} />,
     errorElement: <NotFound />,
     children: [
       {
