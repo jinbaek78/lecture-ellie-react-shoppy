@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { login, logout, onUserStateChange } from '../api/firebase';
+import User from './User';
 type NavBarProps = {};
 const NavBar = ({}: NavBarProps) => {
   const [user, setUser] = useState<any>(null);
@@ -23,6 +24,7 @@ const NavBar = ({}: NavBarProps) => {
         <Link to="/products/new" className="text-2xl">
           <BsFillPencilFill />
         </Link>
+        {user && <User user={user} />}
         {!user && <button onClick={login}>Login</button>}
         {user && <button onClick={logout}>Logout</button>}
       </nav>
