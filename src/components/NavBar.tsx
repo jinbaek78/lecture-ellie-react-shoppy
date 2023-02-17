@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
+import { login } from '../api/firbase';
 type NavBarProps = {};
 const NavBar = ({}: NavBarProps) => {
   return (
@@ -16,7 +17,7 @@ const NavBar = ({}: NavBarProps) => {
         <Link to="/products/new" className="text-2xl">
           <BsFillPencilFill />
         </Link>
-        <button>Login</button>
+        <button onClick={login}>Login</button>
       </nav>
     </header>
   );
