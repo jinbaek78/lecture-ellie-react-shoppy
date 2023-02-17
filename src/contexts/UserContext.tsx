@@ -8,15 +8,7 @@ import {
 import { IAuth } from '../services/auth';
 import { User } from '../config/firebase';
 import { IStorage } from '../db/storage';
-import jwt_decode from 'jwt-decode';
-
-type decodedUserInfoType = {
-  exp: number;
-  iat: number;
-  name: string;
-  picture: string;
-  user_id: string;
-};
+import * as jose from 'jose';
 
 export type UserInfo = Pick<User, 'uid' | 'displayName' | 'photoURL'>;
 
@@ -60,27 +52,7 @@ const UserProvider = ({
   useEffect(() => {
     const token = storage.getToken();
     if (token) {
-      let decoded;
-      try {
-        decoded = jwt_decode<decodedUserInfoType>(token);
-        const {
-          name: displayName,
-          picture: photoURL,
-          user_id: uid,
-          exp,
-        } = decoded;
-        const currentSecondTimes = Date.now() / 1000;
-        if (currentSecondTimes > exp) {
-          console.log('The Token you have is expired');
-          storage.removeToken();
-          return;
-        }
-        console.log('decoded: ', decoded);
-        setUserInfo({ displayName, photoURL, uid });
-      } catch (err) {
-        console.log('invalid token, err: ', err);
-        storage.removeToken();
-      }
+      updateToDecoded(token, setUserInfo);
     }
   }, []);
   return (
@@ -100,3 +72,24 @@ export function useUser(): UserContextType {
 
   return { uid: '', photoURL: '', displayName: '', login() {}, logout() {} };
 }
+
+const updateToDecoded = async (
+  token: string,
+  callback: (userInfo: UserInfo) => void
+) => {
+  try {
+    const publicKey = await jose.importX509(
+      import.meta.env.VITE_FIRE_BASE_PUBLICK_KEY_X509,
+      import.meta.env.VITE_FIRE_BASE_PUBLICK_KEY_ALGORITHM
+    );
+    const {
+      payload: { name, picture, user_id },
+    } = await jose.jwtVerify(token, publicKey);
+    const displayName = name as string;
+    const photoURL = picture as string;
+    const uid = user_id as string;
+    callback({ displayName, photoURL, uid });
+  } catch (err) {
+    console.log('error: ', err);
+  }
+};
