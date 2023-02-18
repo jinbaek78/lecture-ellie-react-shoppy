@@ -6,7 +6,10 @@ type ButtonProps = {
 };
 const Button = ({ text, onClick }: ButtonProps) => {
   return (
-    <button className="bg-brand text-white py-2 px-4 rounded-sm hover:brightness-110">
+    <button
+      onClick={onClick}
+      className="bg-brand text-white py-2 px-4 rounded-sm hover:brightness-110"
+    >
       {text}
     </button>
   );
