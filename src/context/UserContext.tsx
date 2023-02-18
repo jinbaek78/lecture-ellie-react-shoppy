@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { onUserStateChange } from '../api/firebase';
+import { fetchAdminUid, onUserStateChange } from '../api/firebase';
 
 type UserContextType = {
   user: UserType | null;
@@ -19,9 +19,11 @@ type UserProviderProps = {
 };
 const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<UserType | null>(null);
-  const isAdmin: boolean = validateAdmin(user?.email);
+  const [adminUid, setAdminUid] = useState<string>('');
+  const isAdmin = user && adminUid ? user.uid === adminUid : false;
   useEffect(() => {
     onUserStateChange(setUser);
+    fetchAdminUid(setAdminUid);
   }, []);
   return (
     <UserContext.Provider value={{ user, isAdmin }}>
@@ -38,8 +40,4 @@ export function useUser(): UserContextType {
     throw Error('userContext has not been set yet');
   }
   return userContext;
-}
-
-function validateAdmin(email: string | undefined | null): boolean {
-  return email === import.meta.env.VITE_FIRE_BASE_ADMIN_EMAIL;
 }
