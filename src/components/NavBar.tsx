@@ -4,9 +4,13 @@ import { FiShoppingBag } from 'react-icons/fi';
 import { BsFillPencilFill } from 'react-icons/bs';
 import { login, logout, onUserStateChange } from '../api/firebase';
 import User from './User';
+import { User as UserType } from 'firebase/auth';
+// export type UserWithIsAdmin = UserType & { isAdmin: boolean };
 type NavBarProps = {};
 const NavBar = ({}: NavBarProps) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<(UserType & { isAdmin: boolean }) | null>(
+    null
+  );
 
   useEffect(() => {
     onUserStateChange(setUser);
