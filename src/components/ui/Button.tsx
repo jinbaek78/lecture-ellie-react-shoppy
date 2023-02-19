@@ -8,7 +8,7 @@ const Button = ({ text, onClick }: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className="bg-brand text-white py-2 px-4 rounded-sm hover:brightness-110"
+      className="w-full h-full bg-brand text-white py-2 px-4 rounded-sm hover:brightness-110"
     >
       {text}
     </button>

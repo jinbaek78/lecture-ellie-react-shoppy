@@ -12,3 +12,11 @@ body {
 #root {
   @apply w-full max-w-screen-2xl;
 }
+
+@layer base {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
