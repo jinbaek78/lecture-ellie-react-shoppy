@@ -8,7 +8,8 @@ import {
   User,
 } from 'firebase/auth';
 
-import { getDatabase, get, ref } from 'firebase/database';
+import { getDatabase, get, ref, push, update } from 'firebase/database';
+import { ProductInfoType } from '../pages/NewProduct';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -50,4 +51,14 @@ async function adminUser(user: User) {
       }
       return { ...user, isAdmin: false };
     });
+}
+
+export async function saveProduct(product: ProductInfoType) {
+  const id = push(ref(db, '/products')).key;
+  const path = `/products/${id}`;
+  update(ref(db, path), {
+    ...product,
+    id,
+    options: product.options.split(','),
+  });
 }
