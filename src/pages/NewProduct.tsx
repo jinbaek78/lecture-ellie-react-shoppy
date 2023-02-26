@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react';
+import { addNewProduct } from '../api/firebase';
 import { uploadImage } from '../api/uplodaer';
 import Button from '../components/ui/Button';
 
@@ -31,8 +32,8 @@ const NewProduct = ({}: NewProductProps) => {
     e.preventDefault();
     if (file) {
       uploadImage(file).then((url) => {
-        // add product info in the firebase
         console.log(url);
+        addNewProduct(product, url);
       });
     }
   };

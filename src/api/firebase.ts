@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { v4 as uuid } from 'uuid';
 import {
   signOut,
   getAuth,
@@ -8,7 +9,8 @@ import {
   User,
 } from 'firebase/auth';
 
-import { getDatabase, get, ref } from 'firebase/database';
+import { getDatabase, get, ref, set } from 'firebase/database';
+import { ProductType } from '../pages/NewProduct';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -50,4 +52,14 @@ async function adminUser(user: User) {
       }
       return { ...user, isAdmin: false };
     });
+}
+
+export async function addNewProduct(product: ProductType, image: string) {
+  const id = uuid();
+  set(ref(db, `products/${id}`), {
+    ...product,
+    id,
+    image,
+    options: product.options.split(','),
+  });
 }
