@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react';
+import { uploadImage } from '../api/uplodaer';
 import Button from '../components/ui/Button';
 
 export type ProductType = {
@@ -28,6 +29,12 @@ const NewProduct = ({}: NewProductProps) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (file) {
+      uploadImage(file).then((url) => {
+        // add product info in the firebase
+        console.log(url);
+      });
+    }
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
