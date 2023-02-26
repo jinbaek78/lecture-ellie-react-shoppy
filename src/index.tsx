@@ -30,7 +30,7 @@ const router = createBrowserRouter([
         path: '/products/new',
         element: (
           <ProtectedRoute requireAdmin>
-            <NewProduct />,
+            <NewProduct />
           </ProtectedRoute>
         ),
       },
