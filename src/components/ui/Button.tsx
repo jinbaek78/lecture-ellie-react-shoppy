@@ -2,13 +2,16 @@ import { ReactNode } from 'react';
 
 type ButtonProps = {
   text: string;
+  disabled?: boolean;
   onClick?: () => void;
 };
-const Button = ({ text, onClick }: ButtonProps) => {
+const Button = ({ disabled, text, onClick }: ButtonProps) => {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
-      className="bg-brand text-white py-2 px-4 rounded-sm hover:brightness-110"
+      className="bg-brand text-white py-2 px-4 rounded-sm
+       enabled:hover:brightness-110 disabled:bg-gray-300"
     >
       {text}
     </button>

@@ -27,14 +27,23 @@ type NewProductProps = {};
 const NewProduct = ({}: NewProductProps) => {
   const [product, setProduct] = useState<ProductType>(initialProduct);
   const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<string>('');
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (file) {
-      uploadImage(file).then((url) => {
-        console.log(url);
-        addNewProduct(product, url);
-      });
+      setIsUploading(true);
+      uploadImage(file) //
+        .then((url) => {
+          console.log(url);
+          addNewProduct(product, url) //
+            .then(() => {
+              setSuccess('Your Product has successfully added');
+              setTimeout(() => setSuccess(''), 4000);
+            });
+        })
+        .finally(() => setIsUploading(false));
     }
   };
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +56,17 @@ const NewProduct = ({}: NewProductProps) => {
     setProduct((product) => ({ ...product, [name]: value }));
   };
   return (
-    <section>
-      {file && <img src={URL.createObjectURL(file)} alt="local file" />}
-      <form onSubmit={handleSubmit}>
+    <section className="w-full text-center">
+      <h2 className="text-2xl font-bold my-4">New Product Registration</h2>
+      {success && <p className="my-2">✅ {success}</p>}
+      {file && (
+        <img
+          className="w-96 mx-auto mb-2"
+          src={URL.createObjectURL(file)}
+          alt="local file"
+        />
+      )}
+      <form className="flex flex-col px-12" onSubmit={handleSubmit}>
         <input
           type="file"
           accept="image/*"
@@ -97,7 +114,10 @@ const NewProduct = ({}: NewProductProps) => {
           required
           onChange={handleChange}
         />
-        <Button text={'Register Product'} />
+        <Button
+          text={isUploading ? 'Uploading...' : 'Register Product'}
+          disabled={isUploading}
+        />
       </form>
     </section>
   );
