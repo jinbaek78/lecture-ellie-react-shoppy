@@ -9,7 +9,7 @@ export type ProductType = {
   category: string;
   description: string;
   id: string;
-  options: string;
+  options: string | string[];
   image: string;
 };
 

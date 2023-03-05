@@ -9,7 +9,14 @@ import {
   User,
 } from 'firebase/auth';
 
-import { getDatabase, get, ref, set } from 'firebase/database';
+import {
+  getDatabase,
+  get,
+  ref,
+  set,
+  onValue,
+  DataSnapshot,
+} from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
@@ -60,6 +67,16 @@ export async function addNewProduct(product: ProductType, image: string) {
     ...product,
     id,
     image,
-    options: product.options.split(','),
+    options: typeof product.options === 'string' && product.options.split(','),
+  });
+}
+
+export function subscribeProducts(callback: (products: ProductType[]) => void) {
+  const productsRef = ref(db, '/products');
+
+  return onValue(productsRef, (snapshot: DataSnapshot) => {
+    const products: ProductType[] | null =
+      snapshot.val() && Object.values(snapshot.val());
+    callback && products && callback(products);
   });
 }
