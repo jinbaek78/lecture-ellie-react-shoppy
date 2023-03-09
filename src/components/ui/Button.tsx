@@ -10,7 +10,7 @@ const Button = ({ disabled, text, onClick }: ButtonProps) => {
     <button
       disabled={disabled}
       onClick={onClick}
-      className="bg-brand text-white py-2 px-4 rounded-sm
+      className="w-full bg-brand text-white py-2 px-4 rounded-sm
        enabled:hover:brightness-110 disabled:bg-gray-300"
     >
       {text}
