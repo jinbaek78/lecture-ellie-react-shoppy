@@ -1,6 +1,7 @@
 import { ChangeEvent, ReactNode, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Button from '../components/ui/Button';
+import { useCartContext } from '../context/CartContext';
 
 type ProductDetailProps = {};
 const ProductDetail = ({}: ProductDetailProps) => {
@@ -10,11 +11,15 @@ const ProductDetail = ({}: ProductDetailProps) => {
     },
   } = useLocation();
   const [selected, setSelected] = useState<string>(options && options[0]);
-  console.log('selected: ', selected);
+  const [message, setMessage] = useState<string>('');
+  const { addToCart } = useCartContext();
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) =>
     setSelected(e.target.value);
   const handleClick = () => {
-    // Add to Cart logic here
+    addToCart({ productId: id, selected, count: 1 }, () => {
+      setMessage(`✅You've successfully added to the cart`);
+      setTimeout(() => setMessage(''), 4000);
+    });
   };
   return (
     <>
@@ -43,6 +48,7 @@ const ProductDetail = ({}: ProductDetailProps) => {
                 ))}
             </select>
           </div>
+          {message && <p className="mb-2">{message} </p>}
           <Button text="Add to Cart" onClick={handleClick} />
         </div>
       </section>

@@ -11,6 +11,7 @@ import {
 
 import { getDatabase, get, ref, set } from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
+import { CartType } from '../context/CartContext';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -71,4 +72,15 @@ export async function getProducts() {
     }
     return [];
   });
+}
+
+export async function addToCartsDB(
+  uid: string,
+  cartInfo: CartType,
+  callback: () => void
+) {
+  console.log('got cartInfo: ', cartInfo);
+  return set(ref(db, `carts/${uid}/${cartInfo.productId}`), {
+    ...cartInfo,
+  }).then(() => callback && callback());
 }
