@@ -9,9 +9,20 @@ import {
   User,
 } from 'firebase/auth';
 
-import { getDatabase, get, ref, set } from 'firebase/database';
+import {
+  getDatabase,
+  get,
+  ref,
+  set,
+  onValue,
+  DataSnapshot,
+} from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
-import { CartType } from '../context/CartContext';
+import {
+  CartProductType,
+  CartType,
+  RawProductType,
+} from '../context/CartContext';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -61,7 +72,7 @@ export async function addNewProduct(product: ProductType, image: string) {
     ...product,
     id,
     image,
-    options: product.options.split(','),
+    options: !Array.isArray(product.options) && product.options.split(','),
   });
 }
 
@@ -74,13 +85,41 @@ export async function getProducts() {
   });
 }
 
+export async function getRawProducts() {
+  return get(ref(db, 'products')).then((snapshot) => {
+    if (snapshot.exists()) {
+      return snapshot.val();
+    }
+    return [];
+  });
+}
+
 export async function addToCartsDB(
   uid: string,
   cartInfo: CartType,
   callback: () => void
 ) {
-  console.log('got cartInfo: ', cartInfo);
   return set(ref(db, `carts/${uid}/${cartInfo.productId}`), {
     ...cartInfo,
   }).then(() => callback && callback());
+}
+
+export function subscribeCart(
+  uid: string,
+  rawProducts: RawProductType | undefined,
+  callback: (cart: CartProductType[] | null) => void
+) {
+  return onValue(ref(db, `carts/${uid}`), (snapshot: DataSnapshot) => {
+    const data = snapshot.val();
+    const rawCarts: CartType[] = Object.values(data);
+    let cart: CartProductType[];
+    if (rawProducts) {
+      cart = rawCarts.map((rawCart) => {
+        const { image, title, price } = rawProducts?.[rawCart.productId];
+        return { ...rawCart, image, title, price };
+      });
+
+      cart && callback(cart);
+    }
+  });
 }

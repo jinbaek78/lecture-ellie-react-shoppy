@@ -14,7 +14,7 @@ const Products = ({}: ProductsProps) => {
     ['products'],
     getProducts
   );
-  console.log('products: ', products);
+  // console.log('products: ', products);
 
   return (
     <>
