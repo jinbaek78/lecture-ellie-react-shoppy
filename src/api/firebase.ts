@@ -111,6 +111,10 @@ export function subscribeCart(
 ) {
   return onValue(ref(db, `carts/${uid}`), (snapshot: DataSnapshot) => {
     const data = snapshot.val();
+    if (!data) {
+      return;
+    }
+
     const rawCarts: CartType[] = Object.values(data);
     let cart: CartProductType[];
     if (rawProducts) {

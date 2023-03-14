@@ -30,7 +30,7 @@ export type CartProductType = {
 };
 type CartContextType = {
   cart: CartProductType[] | null;
-  cartCount: number;
+  cartCount: number | null;
   addToCart: (cartInfo: CartType, callback: () => void) => void;
 };
 const CartContext = createContext<CartContextType | null>(null);
@@ -46,7 +46,7 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     string,
     RawProductType
   >(['products/raw'], getRawProducts);
-  console.log('cart: ', cart);
+  const cartCount = !user || !cart ? null : cart.length;
   const addToCart = (cartInfo: CartType, callback: () => void) => {
     if (user) {
       return addToCartsDB(user.uid, cartInfo, callback);
@@ -54,6 +54,10 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     //
     console.log('You have to login first');
   };
+
+  if (!user && cart) {
+    setCart(null);
+  }
 
   useEffect(() => {
     let unSubscribeCart: () => void;
@@ -63,9 +67,7 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     return () => unSubscribeCart && unSubscribeCart();
   }, [user, rawProducts]);
   return (
-    <CartContext.Provider
-      value={{ cart, addToCart, cartCount: cart ? cart.length : 0 }}
-    >
+    <CartContext.Provider value={{ cart, addToCart, cartCount }}>
       {children}
     </CartContext.Provider>
   );
