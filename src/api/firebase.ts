@@ -16,6 +16,7 @@ import {
   set,
   onValue,
   DataSnapshot,
+  remove,
 } from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
 import {
@@ -94,7 +95,7 @@ export async function getRawProducts() {
   });
 }
 
-export async function addToCartsDB(
+export async function addToCart(
   uid: string,
   cartInfo: CartType,
   callback: () => void
@@ -112,6 +113,7 @@ export function subscribeCart(
   return onValue(ref(db, `carts/${uid}`), (snapshot: DataSnapshot) => {
     const data = snapshot.val();
     if (!data) {
+      callback && callback(null);
       return;
     }
 
@@ -126,4 +128,40 @@ export function subscribeCart(
       cart && callback(cart);
     }
   });
+}
+
+export async function increaseItemCount(
+  uid: string | undefined,
+  cartItem: CartProductType | undefined
+) {
+  if (cartItem && uid) {
+    const { productId, selected, count } = cartItem;
+    return set(ref(db, `carts/${uid}/${cartItem.productId}`), {
+      productId,
+      selected,
+      count: count + 1,
+    });
+  }
+}
+
+export async function decreaseItemCount(
+  uid: string | undefined,
+  cartItem: CartProductType | undefined
+) {
+  if (cartItem && uid) {
+    const { productId, selected, count } = cartItem;
+    return set(ref(db, `carts/${uid}/${cartItem.productId}`), {
+      productId,
+      selected,
+      count: count - 1,
+    });
+  }
+}
+
+export async function deleteItem(uid: string | undefined, productId: string) {
+  if (uid) {
+    remove(ref(db, `carts/${uid}/${productId}`));
+  }
+  //
+  //
 }

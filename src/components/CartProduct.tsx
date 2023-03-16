@@ -3,8 +3,15 @@ import { AiOutlineMinusSquare, AiOutlinePlusSquare } from 'react-icons/ai';
 import { TbTrashXFilled } from 'react-icons/tb';
 type CartProductProps = {
   item: CartProductType;
+  onIncrease: (cartItem: CartProductType) => void;
+  onDecrease: (cartItem: CartProductType) => void;
+  onDelete: (productId: string) => void;
 };
 const CartProduct = ({
+  onIncrease,
+  onDecrease,
+  onDelete,
+  item,
   item: { productId, selected, count, image, title, price },
 }: CartProductProps) => {
   return (
@@ -18,10 +25,10 @@ const CartProduct = ({
         </div>
       </div>
       <div className="flex gap-1 items-center cursor-pointer text-xl">
-        <AiOutlineMinusSquare />
+        <AiOutlineMinusSquare onClick={() => onDecrease(item)} />
         <p>{count}</p>
-        <AiOutlinePlusSquare />
-        <TbTrashXFilled />
+        <AiOutlinePlusSquare onClick={() => onIncrease(item)} />
+        <TbTrashXFilled onClick={() => onDelete(productId)} />
       </div>
     </div>
   );

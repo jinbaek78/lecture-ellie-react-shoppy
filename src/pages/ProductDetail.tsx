@@ -12,11 +12,11 @@ const ProductDetail = ({}: ProductDetailProps) => {
   } = useLocation();
   const [selected, setSelected] = useState<string>(options && options[0]);
   const [message, setMessage] = useState<string>('');
-  const { addToCart } = useCartContext();
+  const { onAdd } = useCartContext();
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) =>
     setSelected(e.target.value);
   const handleClick = () => {
-    addToCart({ productId: id, selected, count: 1 }, () => {
+    onAdd({ productId: id, selected, count: 1 }, () => {
       setMessage(`✅You've successfully added to the cart`);
       setTimeout(() => setMessage(''), 4000);
     });

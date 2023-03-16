@@ -7,9 +7,11 @@ import {
   useState,
 } from 'react';
 import {
-  addToCartsDB,
-  getProducts,
+  addToCart,
+  decreaseItemCount,
+  deleteItem,
   getRawProducts,
+  increaseItemCount,
   subscribeCart,
 } from '../api/firebase';
 import { ProductType } from '../pages/NewProduct';
@@ -31,7 +33,10 @@ export type CartProductType = {
 type CartContextType = {
   cart: CartProductType[] | null;
   cartCount: number | null;
-  addToCart: (cartInfo: CartType, callback: () => void) => void;
+  onAdd: (cartInfo: CartType, callback: () => void) => void;
+  onIncrease: (cartItem: CartProductType) => void;
+  onDecrease: (cartItem: CartProductType) => void;
+  onDelete: (productId: string) => void;
 };
 const CartContext = createContext<CartContextType | null>(null);
 
@@ -47,14 +52,24 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     RawProductType
   >(['products/raw'], getRawProducts);
   const cartCount = !user || !cart ? null : cart.length;
-  const addToCart = (cartInfo: CartType, callback: () => void) => {
+  const handleAdd = (cartInfo: CartType, callback: () => void) => {
     if (user) {
-      return addToCartsDB(user.uid, cartInfo, callback);
+      return addToCart(user.uid, cartInfo, callback);
     }
-    //
     console.log('You have to login first');
   };
+  const handleIncrease = (cartItem: CartProductType) => {
+    return increaseItemCount(user?.uid, cartItem);
+  };
 
+  const handleDecrease = (cartItem: CartProductType) => {
+    if (cartItem.count === 1) {
+      return;
+    }
+    return decreaseItemCount(user?.uid, cartItem);
+  };
+
+  const handleDelete = (productId: string) => deleteItem(user?.uid, productId);
   if (!user && cart) {
     setCart(null);
   }
@@ -67,7 +82,16 @@ const CartContextProvider = ({ children }: CartContextProviderProps) => {
     return () => unSubscribeCart && unSubscribeCart();
   }, [user, rawProducts]);
   return (
-    <CartContext.Provider value={{ cart, addToCart, cartCount }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        cartCount,
+        onAdd: handleAdd,
+        onIncrease: handleIncrease,
+        onDecrease: handleDecrease,
+        onDelete: handleDelete,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
