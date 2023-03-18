@@ -9,8 +9,16 @@ import {
   User,
 } from 'firebase/auth';
 
-import { getDatabase, get, ref, set } from 'firebase/database';
+import {
+  getDatabase,
+  get,
+  ref,
+  set,
+  DataSnapshot,
+  remove,
+} from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
+import { CartProduct } from '../pages/MyCart';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -71,4 +79,20 @@ export async function getProducts() {
     }
     return [];
   });
+}
+
+export async function getCart(userId: string) {
+  return get(ref(db, `carts/${userId}`)) //
+    .then((snapshot: DataSnapshot) => {
+      const items = snapshot.val() || {};
+      return Object.values(items);
+    });
+}
+
+export async function addOrUpdateToCart(userId: string, product: CartProduct) {
+  return set(ref(db, `carts/${userId}/${product.id}`), product);
+}
+
+export async function removerFromCart(userId: string, productId: string) {
+  return remove(ref(db, `carts/${userId}/${productId}`));
 }

@@ -10,6 +10,7 @@ import { login, logout, onUserStateChange } from '../api/firebase';
 
 type AuthContextType = {
   user: (UserType & { isAdmin: boolean }) | null;
+  uid: string | null;
   login: () => void;
   logout: () => void;
 };
@@ -27,7 +28,9 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     onUserStateChange(setUser);
   }, []);
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, uid: user && user.uid, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -1,9 +1,13 @@
 import { ChangeEvent, ReactNode, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { addOrUpdateToCart } from '../api/firebase';
 import Button from '../components/ui/Button';
+import { useAuthContext } from '../context/AuthContext';
+import { CartProduct } from './MyCart';
 
 type ProductDetailProps = {};
 const ProductDetail = ({}: ProductDetailProps) => {
+  const { uid } = useAuthContext();
   const {
     state: {
       product: { id, image, title, description, category, price, options },
@@ -14,7 +18,20 @@ const ProductDetail = ({}: ProductDetailProps) => {
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) =>
     setSelected(e.target.value);
   const handleClick = () => {
-    // Add to Cart logic here
+    if (!uid) {
+      return;
+    }
+
+    const product: CartProduct = {
+      id,
+      image,
+      title,
+      price,
+      option: selected,
+      quantity: 1,
+    };
+
+    addOrUpdateToCart(uid, product);
   };
   return (
     <>
