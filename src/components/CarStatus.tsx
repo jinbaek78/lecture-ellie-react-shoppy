@@ -1,0 +1,29 @@
+import { AiOutlineShoppingCart } from 'react-icons/ai';
+import { useQuery } from '@tanstack/react-query';
+import { ReactNode } from 'react';
+import { getCart } from '../api/firebase';
+import { ProductType } from '../pages/NewProduct';
+import { useAuthContext } from '../context/AuthContext';
+
+type CarStatusProps = {};
+const CarStatus = ({}: CarStatusProps) => {
+  const { uid } = useAuthContext();
+  const { data: products } = useQuery<
+    Promise<unknown[]>,
+    string,
+    ProductType[]
+  >(['carts'], () => getCart(uid));
+  console.log('products in Status:', products);
+  return (
+    <div className=" relative">
+      <AiOutlineShoppingCart className="text-4xl" />
+      {products && (
+        <p className="w-6 h-6 text-center bg-brand text-white font-bold rounded-full absolute -top-1 -right-2">
+          {products.length}
+        </p>
+      )}
+    </div>
+  );
+};
+
+export default CarStatus;

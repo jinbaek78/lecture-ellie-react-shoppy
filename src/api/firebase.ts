@@ -81,7 +81,11 @@ export async function getProducts() {
   });
 }
 
-export async function getCart(userId: string) {
+export async function getCart(userId: string | null) {
+  if (!userId) {
+    return [];
+  }
+
   return get(ref(db, `carts/${userId}`)) //
     .then((snapshot: DataSnapshot) => {
       const items = snapshot.val() || {};
