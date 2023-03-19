@@ -94,6 +94,7 @@ export async function getCart(userId: string | null) {
 }
 
 export async function addOrUpdateToCart(userId: string, product: CartProduct) {
+  console.log('god product:', product);
   return set(ref(db, `carts/${userId}/${product.id}`), product);
 }
 
