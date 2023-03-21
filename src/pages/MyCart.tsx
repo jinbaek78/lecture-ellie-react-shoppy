@@ -7,6 +7,7 @@ import PriceCard from '../components/PriceCard';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { FaEquals } from 'react-icons/fa';
 import Button from '../components/ui/Button';
+import useCarts from '../hooks/useCarts';
 
 const SHIPPING = 3000;
 export type CartProduct = {
@@ -19,12 +20,11 @@ export type CartProduct = {
 };
 type MyCartProps = {};
 const MyCart = ({}: MyCartProps) => {
+  console.log('My cart called');
   const { uid } = useAuthContext();
-  const { isLoading, data: products } = useQuery<
-    Promise<unknown[]>,
-    string,
-    CartProduct[]
-  >(['carts'], () => getCart(uid));
+  const {
+    cartQuery: { isLoading, data: products },
+  } = useCarts();
 
   if (isLoading) return <p>Loading....</p>;
 

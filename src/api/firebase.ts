@@ -93,11 +93,18 @@ export async function getCart(userId: string | null) {
     });
 }
 
-export async function addOrUpdateToCart(userId: string, product: CartProduct) {
-  console.log('god product:', product);
+export async function addOrUpdateToCart(
+  userId: string | null,
+  product: CartProduct
+) {
+  if (!userId) return Promise.reject('You have to login first');
   return set(ref(db, `carts/${userId}/${product.id}`), product);
 }
 
-export async function removerFromCart(userId: string, productId: string) {
+export async function removerFromCart(
+  userId: string | null,
+  productId: string
+) {
+  if (!userId) return Promise.reject('You have to login first');
   return remove(ref(db, `carts/${userId}/${productId}`));
 }

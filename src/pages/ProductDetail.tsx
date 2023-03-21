@@ -1,27 +1,23 @@
-import { ChangeEvent, ReactNode, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { addOrUpdateToCart } from '../api/firebase';
 import Button from '../components/ui/Button';
-import { useAuthContext } from '../context/AuthContext';
+import useCarts from '../hooks/useCarts';
 import { CartProduct } from './MyCart';
 
 type ProductDetailProps = {};
 const ProductDetail = ({}: ProductDetailProps) => {
-  const { uid } = useAuthContext();
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const { addOrUpdateToCart } = useCarts();
   const {
     state: {
       product: { id, image, title, description, category, price, options },
     },
   } = useLocation();
   const [selected, setSelected] = useState<string>(options && options[0]);
-  console.log('selected: ', selected);
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) =>
     setSelected(e.target.value);
   const handleClick = () => {
-    if (!uid) {
-      return;
-    }
-
     const product: CartProduct = {
       id,
       image,
@@ -31,7 +27,16 @@ const ProductDetail = ({}: ProductDetailProps) => {
       quantity: 1,
     };
 
-    addOrUpdateToCart(uid, product);
+    addOrUpdateToCart.mutate(product, {
+      onSuccess: () => {
+        setSuccessMessage('✅ This item has successfully added to your cart.');
+        setTimeout(() => setSuccessMessage(''), 4000);
+      },
+      onError: () => {
+        setErrorMessage('You have to login first');
+        setTimeout(() => setErrorMessage(''), 4000);
+      },
+    });
   };
   return (
     <>
@@ -61,6 +66,10 @@ const ProductDetail = ({}: ProductDetailProps) => {
             </select>
           </div>
           <Button text="Add to Cart" onClick={handleClick} />
+          {successMessage && <p className="text-2xl my-2">{successMessage}</p>}
+          {errorMessage && (
+            <p className="text-red-500 text-2xl my-2">{errorMessage}</p>
+          )}
         </div>
       </section>
     </>

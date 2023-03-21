@@ -6,7 +6,6 @@ const Products = ({}: ProductsProps) => {
   const {
     productsQuery: { isLoading, error, data: products },
   } = useProducts();
-  console.log('products: ', products);
 
   return (
     <>
