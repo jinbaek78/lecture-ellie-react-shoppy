@@ -13,7 +13,6 @@ const CarStatus = ({}: CarStatusProps) => {
     string,
     ProductType[]
   >(['carts'], () => getCart(uid));
-  console.log('products in Status:', products);
   return (
     <div className=" relative">
       <AiOutlineShoppingCart className="text-4xl" />
