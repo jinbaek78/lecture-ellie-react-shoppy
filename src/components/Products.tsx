@@ -1,19 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { ReactNode } from 'react';
-import { getProducts } from '../api/firebase';
-import { ProductType } from '../pages/NewProduct';
+import useProducts from '../hooks/useProducts';
 import ProductCard from './ProductCard';
 
 type ProductsProps = {};
 const Products = ({}: ProductsProps) => {
   const {
-    isLoading,
-    error,
-    data: products,
-  } = useQuery<Promise<unknown[]>, string, ProductType[] | null>(
-    ['products'],
-    getProducts
-  );
+    productsQuery: { isLoading, error, data: products },
+  } = useProducts();
   console.log('products: ', products);
 
   return (

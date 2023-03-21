@@ -1,8 +1,7 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, FormEvent, ReactNode, useState } from 'react';
-import { addNewProduct } from '../api/firebase';
 import { uploadImage } from '../api/uplodaer';
 import Button from '../components/ui/Button';
+import useProducts from '../hooks/useProducts';
 
 export type ProductType = {
   title: string;
@@ -12,11 +11,6 @@ export type ProductType = {
   id: string;
   options: string;
   image: string;
-};
-
-type AddProductVariables = {
-  product: ProductType;
-  url: string;
 };
 
 const initialProduct: ProductType = {
@@ -36,11 +30,7 @@ const NewProduct = ({}: NewProductProps) => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [success, setSuccess] = useState<string>('');
 
-  const queryClient = useQueryClient();
-  const addProduct = useMutation(
-    ({ product, url }: AddProductVariables) => addNewProduct(product, url),
-    { onSuccess: () => queryClient.invalidateQueries(['products']) }
-  );
+  const { addProduct } = useProducts();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
