@@ -19,6 +19,7 @@ import {
 } from 'firebase/database';
 import { ProductType } from '../pages/NewProduct';
 import { CartProduct } from '../pages/MyCart';
+import { useId } from 'react';
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIRE_BASE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -93,11 +94,18 @@ export async function getCart(userId: string | null) {
     });
 }
 
-export async function addOrUpdateToCart(userId: string, product: CartProduct) {
-  console.log('god product:', product);
+export async function addOrUpdateToCart(
+  userId: string | null,
+  product: CartProduct
+) {
+  if (!useId) return Promise.reject('You have to login first');
   return set(ref(db, `carts/${userId}/${product.id}`), product);
 }
 
-export async function removerFromCart(userId: string, productId: string) {
+export async function removerFromCart(
+  userId: string | null,
+  productId: string
+) {
+  if (!useId) return Promise.reject('You have to login first');
   return remove(ref(db, `carts/${userId}/${productId}`));
 }

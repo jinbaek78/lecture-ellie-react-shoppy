@@ -1,13 +1,14 @@
-import { ChangeEvent, ReactNode, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { addOrUpdateToCart } from '../api/firebase';
+
 import Button from '../components/ui/Button';
-import { useAuthContext } from '../context/AuthContext';
+import useCart from '../hooks/useCart';
 import { CartProduct } from './MyCart';
 
 type ProductDetailProps = {};
 const ProductDetail = ({}: ProductDetailProps) => {
-  const { uid } = useAuthContext();
+  const { addOrUpdateItem } = useCart();
+  const [success, setSuccess] = useState<string>('');
   const {
     state: {
       product: { id, image, title, description, category, price, options },
@@ -18,10 +19,6 @@ const ProductDetail = ({}: ProductDetailProps) => {
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) =>
     setSelected(e.target.value);
   const handleClick = () => {
-    if (!uid) {
-      return;
-    }
-
     const product: CartProduct = {
       id,
       image,
@@ -31,7 +28,12 @@ const ProductDetail = ({}: ProductDetailProps) => {
       quantity: 1,
     };
 
-    addOrUpdateToCart(uid, product);
+    addOrUpdateItem.mutate(product, {
+      onSuccess: () => {
+        setSuccess('✅ This item has successfully added to the cart');
+        setTimeout(() => setSuccess(''), 4000);
+      },
+    });
   };
   return (
     <>
@@ -60,6 +62,7 @@ const ProductDetail = ({}: ProductDetailProps) => {
                 ))}
             </select>
           </div>
+          {success && <p className="my-2">{success}</p>}
           <Button text="Add to Cart" onClick={handleClick} />
         </div>
       </section>

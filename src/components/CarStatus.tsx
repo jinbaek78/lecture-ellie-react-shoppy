@@ -1,18 +1,12 @@
 import { AiOutlineShoppingCart } from 'react-icons/ai';
-import { useQuery } from '@tanstack/react-query';
-import { ReactNode } from 'react';
-import { getCart } from '../api/firebase';
-import { ProductType } from '../pages/NewProduct';
-import { useAuthContext } from '../context/AuthContext';
+
+import useCart from '../hooks/useCart';
 
 type CarStatusProps = {};
 const CarStatus = ({}: CarStatusProps) => {
-  const { uid } = useAuthContext();
-  const { data: products } = useQuery<
-    Promise<unknown[]>,
-    string,
-    ProductType[]
-  >(['carts'], () => getCart(uid));
+  const {
+    cartQuery: { data: products },
+  } = useCart();
   return (
     <div className=" relative">
       <AiOutlineShoppingCart className="text-4xl" />
